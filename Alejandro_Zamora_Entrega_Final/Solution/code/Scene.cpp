@@ -240,6 +240,9 @@ namespace udit
         // render
         cone.render();
 
+        glUniform1f(glGetUniformLocation(program_id_2, "opacity"), 1.f);
+
+        cone.renderWireframe();
     }
 
     void Scene::resize (int width, int height)

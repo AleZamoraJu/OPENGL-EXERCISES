@@ -36,6 +36,7 @@
            ~Cone();
 
             void render ();
+            void renderWireframe();
         };
 
     }

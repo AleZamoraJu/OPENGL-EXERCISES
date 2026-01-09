@@ -143,4 +143,19 @@ namespace udit
         glBindVertexArray (vao_id_tip);
         glDrawArrays    (GL_TRIANGLE_FAN, 0, tip_coordinates.size() / 3);
     }
+
+    void Cone::renderWireframe()
+    {
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); // Modo wireframe
+
+        glFrontFace(GL_CCW);
+        glBindVertexArray(vao_id);
+        glDrawArrays(GL_TRIANGLE_FAN, 0, base_coordinates.size() / 3);
+
+        glFrontFace(GL_CW);
+        glBindVertexArray(vao_id_tip);
+        glDrawArrays(GL_TRIANGLE_FAN, 0, tip_coordinates.size() / 3);
+
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); // Volvemos al modo relleno
+    }
 }
