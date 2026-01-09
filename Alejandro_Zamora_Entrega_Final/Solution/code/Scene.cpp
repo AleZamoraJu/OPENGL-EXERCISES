@@ -239,7 +239,7 @@ namespace udit
         cone_model_matrix = glm::rotate(cone_model_matrix, glm::radians(90.f), glm::vec3(1.f, 0.f, 0.f));
 
         // rotación (cada frame)
-        cone_model_matrix = glm::rotate(cone_model_matrix, -angle, glm::vec3(0.f, 0.f, 1.f));
+        cone_model_matrix = glm::rotate(cone_model_matrix, -angle*2, glm::vec3(0.f, 0.f, 1.f));
 
         // traslación
         cone_model_matrix = glm::translate(cone_model_matrix, glm::vec3(0.f, -5.f, -5.f));
