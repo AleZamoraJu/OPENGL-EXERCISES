@@ -54,51 +54,30 @@ namespace udit
 
         "#version 330\n"
         ""
-        "struct Light"
-        "{"
-        "    vec4 position;"
-        "    vec3 color;"
-        "};"
-        ""
-        "uniform Light light;"
-        "uniform float ambient_intensity;"
-        "uniform float diffuse_intensity;"
-        "uniform float opacity;"
-        "out float frag_opacity;"
-        ""
-        "uniform vec3 material_color;"
-        ""
         "uniform mat4 model_view_matrix;"
         "uniform mat4 projection_matrix;"
-        "uniform mat4     normal_matrix;"
         ""
+        "uniform float opacity;"
         "layout (location = 0) in vec3 vertex_coordinates;"
-        "layout (location = 1) in vec3 vertex_normal;"
+        "layout (location = 1) in vec3 vertex_color;"
         ""
         "out vec3 front_color;"
+        "out float frag_opacity;"
         ""
         "void main()"
         "{"
-        "    vec4  normal   = normal_matrix * vec4(vertex_normal, 0.0);"
-        "    vec4  position = model_view_matrix * vec4(vertex_coordinates, 1.0);"
-        ""
-        "    vec4  light_direction = light.position - position;"
-        "    float light_intensity = diffuse_intensity * max (dot (normalize (normal.xyz), normalize (light_direction.xyz)), 0.0);"
-        ""
-        "    front_color = ambient_intensity * material_color + diffuse_intensity * light_intensity * light.color * material_color;"
-        "    gl_Position = projection_matrix * position;"
-        ""
-        "    frag_opacity = opacity;"
+        "   gl_Position  = projection_matrix * model_view_matrix * vec4(vertex_coordinates, 1.0);"
+        "   front_color  = vertex_color;"
+        "   frag_opacity = opacity;"
         "}";
 
     const string Scene::fragment_shader_cone_code =
 
         "#version 330\n"
         ""
-        "in float  frag_opacity;"
-        "in  vec3    front_color;"
+        "in  vec3 front_color;"
         "out vec4 fragment_color;"
-        ""
+        "in float frag_opacity;"
         "void main()"
         "{"
         "    fragment_color = vec4(front_color, frag_opacity);"
@@ -166,10 +145,10 @@ namespace udit
 
     void Scene::render()
     {
-        // 1️⃣ Limpiar buffers
+        // 1️ Limpiar buffers
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        // 2️⃣ Matrices de cámara y modelo
+        // 2️ Matrices de cámara y modelo
         glm::mat4 model_view_matrix(1.f);
         model_view_matrix = glm::translate(model_view_matrix, glm::vec3(0.f, -5.f, -20.f)); // ajustar altura y distancia
         model_view_matrix = glm::rotate(model_view_matrix, angle, glm::vec3(0.f, 1.f, 0.f));
@@ -184,7 +163,7 @@ namespace udit
         glm::mat4 normal_matrix = glm::transpose(glm::inverse(model_view_matrix));
 
         // ========================
-        // 3️⃣ Render terreno (shader 1)
+        // 3️ Render terreno (shader 1)
         // ========================
         glUseProgram(program_id);
 
@@ -215,7 +194,7 @@ namespace udit
 
 
         // ========================
-        // 4️⃣ Render cono (shader 2)
+        // 4️ Render cono (shader 2)
         // ========================
         glUseProgram(program_id_2);
 
@@ -223,12 +202,8 @@ namespace udit
         glUniformMatrix4fv(glGetUniformLocation(program_id_2, "projection_matrix"), 1, GL_FALSE, glm::value_ptr(projection_matrix));
         glUniformMatrix4fv(glGetUniformLocation(program_id_2, "normal_matrix"), 1, GL_FALSE, glm::value_ptr(normal_matrix));
 
-        // Parámetros de luz y material
-        glUniform3f(glGetUniformLocation(program_id_2, "material_color"), 1.f, 1.f, 1.f);
-        glUniform4f(glGetUniformLocation(program_id_2, "light.position"), 10.f, 10.f, 10.f, 1.f);
-        glUniform3f(glGetUniformLocation(program_id_2, "light.color"), 1.f, 1.f, 1.f);
-        glUniform1f(glGetUniformLocation(program_id_2, "ambient_intensity"), 0.3f);
-        glUniform1f(glGetUniformLocation(program_id_2, "diffuse_intensity"), 0.7f);
+        // Parámetros de material
+        //glUniform3f(glGetUniformLocation(program_id_2, "material_color"), 1.f, 1.f, 1.f);
 
         //Opacidad
         glUniform1f(glGetUniformLocation(program_id_2, "opacity"), 0.2f);

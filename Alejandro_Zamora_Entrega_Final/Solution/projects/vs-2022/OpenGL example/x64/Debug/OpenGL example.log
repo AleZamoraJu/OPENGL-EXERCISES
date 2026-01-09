@@ -1,5 +1,5 @@
 ﻿  Scene.cpp
-C:\Users\Alejandro\Desktop\OpenGL_Exercises\OPENGL-EXERCISES\Alejandro_Zamora_Entrega_Final\Solution\code\Cone.hpp(9,14): warning C4067: símbolos (token) inesperados después de la directiva del preprocesador; se esperaba una nueva línea
+C:\Users\Alejandro\Desktop\OPENGL-EXERCISES\Alejandro_Zamora_Entrega_Final\Solution\code\Cone.hpp(9,14): warning C4067: símbolos (token) inesperados después de la directiva del preprocesador; se esperaba una nueva línea
   (compiling source file '../../code/Scene.cpp')
   
-  OpenGL example.vcxproj -> C:\Users\Alejandro\Desktop\OpenGL_Exercises\OPENGL-EXERCISES\Alejandro_Zamora_Entrega_Final\Solution\projects\vs-2022\x64\Debug\OpenGL example.exe
+  OpenGL example.vcxproj -> C:\Users\Alejandro\Desktop\OPENGL-EXERCISES\Alejandro_Zamora_Entrega_Final\Solution\projects\vs-2022\x64\Debug\OpenGL example.exe
