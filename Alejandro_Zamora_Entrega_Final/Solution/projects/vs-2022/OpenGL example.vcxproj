@@ -50,13 +50,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>../../../shared/code;../../../libraries/sdl3/include;../../../libraries/glad/include;../../../libraries/glm/include;../../../libraries/soil2/include;../../../libraries/half/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../../libraries/assimp/include;../../../shared/code;../../../libraries/sdl3/include;../../../libraries/glad/include;../../../libraries/glm/include;../../../libraries/soil2/include;../../../libraries/half/include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>../../../libraries/sdl3/lib/x64;../../../libraries/glad/lib/x64;../../../libraries/soil2/lib/x64</AdditionalLibraryDirectories>
-      <AdditionalDependencies>sdl3-static-debug.lib;glad-static-debug.lib;soil2-static-debug.lib;imm32.lib;setupapi.lib;version.lib;winmm.lib;opengl32.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../../../libraries/sdl3/lib/x64;../../../libraries/assimp/lib/x64;../../../libraries/glad/lib/x64;../../../libraries/soil2/lib/x64</AdditionalLibraryDirectories>
+      <AdditionalDependencies>sdl3-static-debug.lib;assimp-static-debug.lib;zlib-static-debug.lib;glad-static-debug.lib;soil2-static-debug.lib;imm32.lib;setupapi.lib;version.lib;winmm.lib;opengl32.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -83,6 +83,7 @@
     <ClCompile Include="..\..\..\shared\code\Window.cpp" />
     <ClCompile Include="..\..\code\Cone.cpp" />
     <ClCompile Include="..\..\code\main.cpp" />
+    <ClCompile Include="..\..\code\Mesh.cpp" />
     <ClCompile Include="..\..\code\Scene.cpp" />
     <ClCompile Include="..\..\code\Terrain.cpp" />
   </ItemGroup>
@@ -92,6 +93,7 @@
     <ClInclude Include="..\..\..\shared\code\opengl-recipes.hpp" />
     <ClInclude Include="..\..\..\shared\code\Window.hpp" />
     <ClInclude Include="..\..\code\Cone.hpp" />
+    <ClInclude Include="..\..\code\Mesh.hpp" />
     <ClInclude Include="..\..\code\Scene.hpp" />
     <ClInclude Include="..\..\code\Terrain.hpp" />
   </ItemGroup>

@@ -11,6 +11,7 @@
     #include <string>
     #include "Terrain.hpp"
     #include "Cone.hpp"
+    #include "Mesh.hpp"
 
     namespace udit
     {
@@ -23,23 +24,27 @@
 
         private:
 
-            static const std::string   vertex_shader_code;
-            static const std::string fragment_shader_code;
-            static const std::string   vertex_shader_cone_code;
-            static const std::string fragment_shader_cone_code;
-            static const std::string         texture_path;
+            static const  std::string   vertex_shader_code;
+            static const  std::string   fragment_shader_code;
+            static const  std::string   vertex_shader_cone_code;
+            static const  std::string   fragment_shader_cone_code;
+            static const  std::string   texture_path;
+            static const  std::string   model_path;
 
             GLuint  program_id;
             GLuint  program_id_2;
+
             GLuint  texture_id;
             bool    there_is_texture;
 
             GLint   model_view_matrix_id;
             GLint   model_view_matrix_id_2;
+
             GLint   projection_matrix_id;
 
             Terrain terrain;
             Cone    cone; 
+            Mesh    lighthouse;
 
             float   angle;
 
