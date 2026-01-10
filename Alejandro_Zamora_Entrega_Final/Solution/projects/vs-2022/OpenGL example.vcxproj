@@ -84,8 +84,10 @@
     <ClCompile Include="..\..\code\Cone.cpp" />
     <ClCompile Include="..\..\code\main.cpp" />
     <ClCompile Include="..\..\code\Mesh.cpp" />
+    <ClCompile Include="..\..\code\Model.cpp" />
     <ClCompile Include="..\..\code\Scene.cpp" />
     <ClCompile Include="..\..\code\Terrain.cpp" />
+    <ClCompile Include="..\..\code\Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\shared\code\Color.hpp" />
@@ -94,8 +96,10 @@
     <ClInclude Include="..\..\..\shared\code\Window.hpp" />
     <ClInclude Include="..\..\code\Cone.hpp" />
     <ClInclude Include="..\..\code\Mesh.hpp" />
+    <ClInclude Include="..\..\code\Model.hpp" />
     <ClInclude Include="..\..\code\Scene.hpp" />
     <ClInclude Include="..\..\code\Terrain.hpp" />
+    <ClInclude Include="..\..\code\Texture.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

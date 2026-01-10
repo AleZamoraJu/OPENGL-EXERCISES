@@ -37,8 +37,28 @@ void Mesh::load_mesh(const std::string& mesh_file_path)
             );
         }
 
+        SubMesh sm;
+
         // 2️ Colores por defecto (gris)
-        std::vector<glm::vec3> colors(vertex_count, glm::vec3(0.7f));
+        std::vector<glm::vec2> uvs(vertex_count, glm::vec2(0.f));
+        if (mesh->mTextureCoords[0])
+        {
+            for (size_t i = 0; i < vertex_count; ++i)
+                uvs[i] = glm::vec2(mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y);
+        }
+        
+        if (!mesh->mTextureCoords[0])
+        {
+            std::cout << "¡Advertencia! UVs no encontradas en mesh " << mesh_file_path << std::endl;
+        }
+
+
+        // VBO de UVs
+        glBindBuffer(GL_ARRAY_BUFFER, sm.vbo[COLORS_VBO]); // renombrar a TEXCOORDS_VBO
+        glBufferData(GL_ARRAY_BUFFER, uvs.size() * sizeof(glm::vec2), uvs.data(), GL_STATIC_DRAW);
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), (void*)0);
+
 
         // 3️ Índices
         GLsizei index_count = mesh->mNumFaces * 3;
@@ -56,9 +76,7 @@ void Mesh::load_mesh(const std::string& mesh_file_path)
         }
 
         // 4️ Crear VAO y VBOs
-        SubMesh sm;
         sm.index_count = index_count;
-
         glGenVertexArrays(1, &sm.vao);
         glBindVertexArray(sm.vao);
 
@@ -66,22 +84,20 @@ void Mesh::load_mesh(const std::string& mesh_file_path)
 
         // Posiciones
         glBindBuffer(GL_ARRAY_BUFFER, sm.vbo[COORDINATES_VBO]);
-        glBufferData(GL_ARRAY_BUFFER, positions.size() * sizeof(glm::vec3),
-            positions.data(), GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, positions.size() * sizeof(glm::vec3), positions.data(), GL_STATIC_DRAW);
         glEnableVertexAttribArray(0);
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)0);
 
         // Colores
-        glBindBuffer(GL_ARRAY_BUFFER, sm.vbo[COLORS_VBO]);
-        glBufferData(GL_ARRAY_BUFFER, colors.size() * sizeof(glm::vec3),
-            colors.data(), GL_STATIC_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, sm.vbo[COLORS_VBO]); // renombrar
+        glBufferData(GL_ARRAY_BUFFER, uvs.size() * sizeof(glm::vec2), uvs.data(), GL_STATIC_DRAW);
         glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)0);
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), (void*)0);
+
 
         // Índices
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, sm.vbo[INDICES_EBO]);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint),
-            indices.data(), GL_STATIC_DRAW);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), indices.data(), GL_STATIC_DRAW);
 
         // Limpiar VAO
         glBindVertexArray(0);

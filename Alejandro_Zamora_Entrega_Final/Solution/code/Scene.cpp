@@ -27,8 +27,8 @@ namespace udit
         ""
         "uniform sampler2D sampler;"
         "uniform float     max_height;"
-        "uniform float line_color;"
-        "out float intensity;"
+        "uniform float     line_color;"
+        "out float         intensity;"
         ""
         "void main()"
         "{"
@@ -87,24 +87,22 @@ namespace udit
 
     const string Scene::model_path = "../../../shared/assets/lighthouse.obj";
 
-    Scene::Scene(int width, int height)
-    :
-        terrain(10.f, 10.f, 50, 50),
-        angle  (0.f),
-        cone(),
-        lighthouse(model_path)
+    const string Scene::texture_uvs = "../../../shared/assets/uv-checker.png";
+
+    Scene::Scene(int width, int height) : terrain(10.f, 10.f, 50, 50), angle  (0.f), cone(), lighthouse(texture_uvs,model_path)
     {
         // Se compilan y se activan los shaders:
 
         program_id = compile_shaders (vertex_shader_code, fragment_shader_code);
 
+        program_id_2 = compile_shaders(vertex_shader_cone_code, fragment_shader_cone_code);
+
         glUseProgram (program_id);
 
-        program_id_2 = compile_shaders (vertex_shader_cone_code, fragment_shader_cone_code);
-
-        glUseProgram (program_id_2);
-
         model_view_matrix_id = glGetUniformLocation (program_id, "model_view_matrix");
+
+        glUseProgram(program_id_2);
+
         model_view_matrix_id_2 = glGetUniformLocation (program_id_2, "model_view_matrix");
 
         projection_matrix_id = glGetUniformLocation (program_id, "projection_matrix");
@@ -133,18 +131,14 @@ namespace udit
 
     Scene::~Scene()
     {
-        glDeleteProgram (program_id);
-
+        glDeleteProgram(program_id);
         if (there_is_texture)
-        {
-            glDeleteTextures (1, &texture_id);
-        }
+            glDeleteTextures(1, &texture_id);
 
-        lighthouse.~Mesh();
         terrain.~Terrain();
         cone.~Cone();
     }
-
+        
     void Scene::update ()
     {
         angle += .005f;
@@ -164,19 +158,14 @@ namespace udit
 
         glm::mat4 normal_matrix = glm::transpose(glm::inverse(model_view_matrix));
 
-        // ========================
         // 3️ Render terreno (shader 1)
-        // ========================
         glUseProgram(program_id);
-
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, texture_id); // texture del heightmap
+        glUniform1i(glGetUniformLocation(program_id, "sampler"), 0);
         // Enviar matrices
         glUniformMatrix4fv(model_view_matrix_id, 1, GL_FALSE, glm::value_ptr(model_view_matrix));
         glUniformMatrix4fv(projection_matrix_id, 1, GL_FALSE, glm::value_ptr(projection_matrix));
-
-        // Activar textura
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, texture_id);
-        glUniform1i(glGetUniformLocation(program_id, "sampler"), 0);
 
         // Altura máxima
         glUniform1f(glGetUniformLocation(program_id, "max_height"), 5.f);
@@ -193,56 +182,37 @@ namespace udit
         // Render terreno
         terrain.renderWireframe();
 
+        glm::mat4 lighthouse_view_matrix(1.f);
 
+        lighthouse_view_matrix = glm::translate(lighthouse_view_matrix, glm::vec3(0.f, 1.9f, 0.f));
+        lighthouse_view_matrix = glm::scale(lighthouse_view_matrix, glm::vec3(0.05f));
 
-        // ========================
-        // 4️ Render cono (shader 2)
-        // ========================
-        glUseProgram(program_id_2);
-
-        glUniform1f(glGetUniformLocation(program_id_2, "opacity"), 1.f);
-
-        glm::mat4 view = model_view_matrix; // la que ya usas en la escena
-
-        glm::mat4 model = glm::mat4(0.5f);
-        model = glm::translate(model, glm::vec3(0.f, 1.9f, 0.f));
-        model = glm::scale(model, glm::vec3(0.05f));
-
-        glm::mat4 model_view = view * model;
+        glm::mat4 model_view = model_view_matrix * lighthouse_view_matrix;
 
         glUniformMatrix4fv(model_view_matrix_id_2, 1, GL_FALSE, glm::value_ptr(model_view));
 
-        lighthouse.render();
+        lighthouse.render(lighthouse.texture.program_id, model_view, projection_matrix);
 
-        glUniformMatrix4fv(model_view_matrix_id_2, 1, GL_FALSE, glm::value_ptr(model_view_matrix));
+        glm::mat4 cone_view_matrix(1.f);
+
+        cone_view_matrix = glm::rotate(cone_view_matrix, glm::radians(90.f), glm::vec3(1.f, 0.f, 0.f)); // rotación (cada frame) 
+        cone_view_matrix = glm::rotate(cone_view_matrix, -angle * 2, glm::vec3(0.f, 0.f, 1.f)); 
+        cone_view_matrix = glm::translate(cone_view_matrix, glm::vec3(0.f, -5.f, -5.f)); // traslación
+
+        glm::mat4 cone_view = model_view_matrix * cone_view_matrix;
+
+        glUseProgram(program_id_2);
+        glUniform1f(glGetUniformLocation(program_id_2, "opacity"), 0.8f);
+
+        glUniformMatrix4fv(model_view_matrix_id_2, 1, GL_FALSE, glm::value_ptr(cone_view));
         glUniformMatrix4fv(glGetUniformLocation(program_id_2, "projection_matrix"), 1, GL_FALSE, glm::value_ptr(projection_matrix));
 
-        // Parámetros de material
-        //glUniform3f(glGetUniformLocation(program_id_2, "material_color"), 1.f, 1.f, 1.f);
-
-        //Opacidad
-        glUniform1f(glGetUniformLocation(program_id_2, "opacity"), 0.2f);
-
-        glm::mat4 cone_model_matrix = model_view_matrix;
-
-        // rotación fija (una sola vez)
-        cone_model_matrix = glm::rotate(cone_model_matrix, glm::radians(90.f), glm::vec3(1.f, 0.f, 0.f));
-
-        // rotación (cada frame)
-        cone_model_matrix = glm::rotate(cone_model_matrix, -angle * 2, glm::vec3(0.f, 0.f, 1.f));
-
-        // traslación
-        cone_model_matrix = glm::translate(cone_model_matrix, glm::vec3(0.f, -5.f, -5.f));
-
-        // enviar al shader
-        glUniformMatrix4fv(model_view_matrix_id_2, 1, GL_FALSE, glm::value_ptr(cone_model_matrix));
-
-        // render
         cone.render();
 
         glUniform1f(glGetUniformLocation(program_id_2, "opacity"), 1.f);
 
         cone.renderWireframe();
+
     }
 
     void Scene::resize (int width, int height)

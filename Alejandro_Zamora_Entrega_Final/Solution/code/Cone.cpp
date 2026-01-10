@@ -111,12 +111,13 @@ namespace udit
         glVertexAttribPointer (0, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
         // Se suben a un VBO los datos de normales y se vinculan al VAO:
-        vector <float> tip_colors(base_coordinates.size(), 1.f);
-        glBindBuffer (GL_ARRAY_BUFFER, vbo_ids_tip[1]);
-        glBufferData (GL_ARRAY_BUFFER, tip_colors.size()*sizeof(float), tip_colors.data(), GL_STATIC_DRAW);
+        vector<GLfloat> tip_colors(tip_coordinates.size(), 1.f); // size debe ser igual a tip_coordinates.size()
 
-        glEnableVertexAttribArray (1);
-        glVertexAttribPointer (1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+        glBindBuffer(GL_ARRAY_BUFFER, vbo_ids_tip[1]);
+        glBufferData(GL_ARRAY_BUFFER, tip_colors.size() * sizeof(GLfloat), tip_colors.data(), GL_STATIC_DRAW);
+
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
         // Se suben a un IBO los datos de índices:
         glBindVertexArray (0);

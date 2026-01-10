@@ -11,7 +11,7 @@
     #include <string>
     #include "Terrain.hpp"
     #include "Cone.hpp"
-    #include "Mesh.hpp"
+    #include "Model.hpp"
 
     namespace udit
     {
@@ -28,6 +28,7 @@
             static const  std::string   fragment_shader_code;
             static const  std::string   vertex_shader_cone_code;
             static const  std::string   fragment_shader_cone_code;
+            static const  std::string   texture_uvs;
             static const  std::string   texture_path;
             static const  std::string   model_path;
 
@@ -44,7 +45,7 @@
 
             Terrain terrain;
             Cone    cone; 
-            Mesh    lighthouse;
+            Model    lighthouse;
 
             float   angle;
 
