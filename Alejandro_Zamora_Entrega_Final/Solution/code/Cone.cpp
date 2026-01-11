@@ -50,21 +50,6 @@ namespace udit
         tip_coordinates.push_back(base_coordinates[4]);
         tip_coordinates.push_back(base_coordinates[5]);
 
-        normals.push_back(0.f); 
-        normals.push_back(-1.f);
-        normals.push_back(0.f);
-        for (float angle = 0.f, step = full_circle / number_of_base_vertices; angle < full_circle; angle += step) 
-        {
-            float x = cos(angle);
-            float z = sin(angle);
-            normals.push_back(x); 
-            normals.push_back(0.f);
-            normals.push_back(z); 
-        } 
-        normals.push_back(normals[3]); 
-        normals.push_back(normals[4]);
-        normals.push_back(normals[5]);
-
         // Se generan índices para los VBOs del cubo:
 
         glGenBuffers (2, vbo_ids);
@@ -82,7 +67,7 @@ namespace udit
         glEnableVertexAttribArray (0);
         glVertexAttribPointer (0, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
-        // Se suben a un VBO los datos de normales y se vinculan al VAO:
+        // Se suben a un VBO los datos de colores y se vinculan al VAO:
         vector <float> base_colors(base_coordinates.size(), 1.f);
 
 
@@ -95,32 +80,28 @@ namespace udit
         // Se suben a un IBO los datos de índices:
         glBindVertexArray (0);
 
-        glGenBuffers (2, vbo_ids_tip);
-        glGenVertexArrays (1, &vao_id_tip);
+       // 1. Generar y activar VAO de la punta
+        glGenBuffers(2, vbo_ids_tip);
+        glGenVertexArrays(1, &vao_id_tip);
+        glBindVertexArray(vao_id_tip);
 
-        // Se activa el VAO del cubo para configurarlo:
+        // 2. Coordenadas (Location 0)
+        glBindBuffer(GL_ARRAY_BUFFER, vbo_ids_tip[0]);
+        glBufferData(GL_ARRAY_BUFFER, tip_coordinates.size() * sizeof(GLfloat), tip_coordinates.data(), GL_STATIC_DRAW);
 
-        glBindVertexArray (vao_id_tip);
+        glEnableVertexAttribArray(0); // <-- CORREGIDO: Activamos el 0 para la posición
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
-        // Se suben a un VBO los datos de coordenadas y se vinculan al VAO:
-
-        glBindBuffer (GL_ARRAY_BUFFER, vbo_ids_tip[0]);
-        glBufferData (GL_ARRAY_BUFFER, tip_coordinates.size()*sizeof(GLfloat), tip_coordinates.data(), GL_STATIC_DRAW);
-
-        glEnableVertexAttribArray (0);
-        glVertexAttribPointer (0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-
-        // Se suben a un VBO los datos de normales y se vinculan al VAO:
-        vector<GLfloat> tip_colors(tip_coordinates.size(), 1.f); // size debe ser igual a tip_coordinates.size()
+        // 3. Colores (Location 1)
+        vector<GLfloat> tip_colors(tip_coordinates.size(), 1.f); // Todos a 1.0 (blanco)
 
         glBindBuffer(GL_ARRAY_BUFFER, vbo_ids_tip[1]);
         glBufferData(GL_ARRAY_BUFFER, tip_colors.size() * sizeof(GLfloat), tip_colors.data(), GL_STATIC_DRAW);
 
-        glEnableVertexAttribArray(1);
+        glEnableVertexAttribArray(1); // <-- CORREGIDO: Activamos el 1 para el color
         glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
-        // Se suben a un IBO los datos de índices:
-        glBindVertexArray (0);
+        glBindVertexArray(0);
     }
 
     Cone::~Cone()

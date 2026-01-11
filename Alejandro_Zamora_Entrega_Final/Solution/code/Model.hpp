@@ -12,6 +12,6 @@ private:
 	Mesh mesh;
 public:
 	Texture texture;
-	void render(GLuint program_id, const glm::mat4& model_view, const glm::mat4& projection);
+	void render(	const glm::mat4& model_view, const glm::mat4& projection);
 	Model(const std::string& tex_file_path, const std::string& mesh_file_path);
 };

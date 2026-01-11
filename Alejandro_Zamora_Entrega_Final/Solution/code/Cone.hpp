@@ -20,8 +20,7 @@
 
             vector <GLfloat> base_coordinates;
             vector <GLfloat> tip_coordinates;
-            vector <GLfloat> normals;
-            static const GLubyte indices    [];
+            static const GLubyte indices [];
 
         private:
 
